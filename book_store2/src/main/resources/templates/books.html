@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Book Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Book Store</a>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="get" th:action="@{/books}">
+                <div class="input-group">
+                    <label class="input-group-text" for="categorySelect">Category</label>
+                    <select class="form-select" id="categorySelect" name="categoryId" onchange="this.form.submit()">
+                        <option th:value="0" th:selected="${selectedCategoryId == 0}">All</option>
+                        <option th:each="cat : ${categories}"
+                                th:value="${cat.id}"
+                                th:text="${cat.name}"
+                                th:selected="${cat.id == selectedCategoryId}">
+                        </option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 text-end">
+            <p class="mt-2">Showing <strong th:text="${books.size()}">0</strong> books</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div th:if="${books.empty}" class="col-12">
+            <div class="alert alert-info">No books found for the selected category.</div>
+        </div>
+
+        <div class="col-md-4 mb-3" th:each="book : ${books}">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${book.title}">Book title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${book.author}">Author</h6>
+                    <p class="card-text" th:text="${book.description}">Description</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <small class="text-muted" th:text="${book.category != null ? book.category.name : 'Uncategorized'}">Category</small>
+                    <span class="fw-bold" th:text="${#numbers.formatDecimal(book.price, 2, 'POINT')}">0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
