@@ -1,68 +1,65 @@
 package com.capstone2.book_store2.Controller;
 
 import com.capstone2.book_store2.Model.userModel;
-import com.capstone2.book_store2.Repository.userRepository;
+import com.capstone2.book_store2.Service.userService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-// login & registration
+/**
+ * REST Controller for authentication endpoints
+ * - Handles HTTP requests
+ * - Delegates logic to Service
+ */
 @RestController
 @RequestMapping("/auth")
 public class userController {
 
-    private final userRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+    private final userService userService;
 
-    public userController(userRepository userRepository,
-                          PasswordEncoder passwordEncoder,
-                          AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
+    // Inject service only
+    public userController(userService userService) {
+        this.userService = userService;
     }
 
-    // Register unchanged (but avoid double save)
+
+      //Register endpoint
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody userModel user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Username already exists!");
-        }
-        if (user.getUsername() == null || user.getPassword() == null) {
-            return ResponseEntity.badRequest().body("Username and password are required");
-        }
         try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Registration failed, try again later");
+            userService.register(user);
+            return ResponseEntity.ok("User registered successfully!");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
-        return ResponseEntity.ok("User registered successfully!");
     }
 
-    // Login: authenticate and create session
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody userModel user, HttpServletRequest request) {
-        try {
-            UsernamePasswordAuthenticationToken token =
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-            Authentication auth = authenticationManager.authenticate(token);
 
-            // store authentication in security context -> session will be created and JSESSIONID set
+    // Login endpoint
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(
+            @RequestBody userModel user,
+            HttpServletRequest request
+    ) {
+        try {
+            // Authenticate via service
+            Authentication auth =
+                    userService.login(user.getUsername(), user.getPassword());
+
+            // Store authentication in SecurityContext
             SecurityContextHolder.getContext().setAuthentication(auth);
-            request.getSession(true); // create session so server issues Set-Cookie: JSESSIONID
+
+            // Force session creation (JSESSIONID cookie)
+            request.getSession(true);
 
             return ResponseEntity.ok("Login successful!");
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(401).body("Invalid username or password!");
+        } catch (Exception ex) {
+            return ResponseEntity.status(401)
+                    .body("Invalid username or password!");
         }
     }
 }
