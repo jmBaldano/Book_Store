@@ -1,58 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
-    bindAddToCartButtons();
-    bindCheckoutButton();
-    loadCart();
-    loadOrders();
+    renderCart();
+    renderOrders();
     updateCartCount();
 });
 
-// ====================== ADD TO CART ======================
-function bindAddToCartButtons() {
-    const addBtns = document.querySelectorAll(".add-to-cart-btn");
-    if (!addBtns) return;
-
-    addBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const bookId = btn.dataset.id;
-            if (!bookId) return;
-
-            fetch(`/api/cart/add/${bookId}`, { method: "POST" })
-                .then(res => {
-                    if (!res.ok) throw new Error("Add to cart failed");
-                    alert("Book added to cart!");
-                    loadCart();
-                    updateCartCount();
-                })
-                .catch(console.error);
-        });
-    });
-}
-
 // ====================== CART ======================
-function loadCart() {
+function renderCart() {
     const cartList = document.getElementById("cartList");
     const cartTotal = document.getElementById("cartTotal");
 
-    if (!cartList && !cartTotal) return; // no cart elements on this page
+    if (!cartList && !cartTotal) return;
 
     fetch("/api/cart")
         .then(res => res.json())
         .then(cartItems => {
             if (cartList) {
                 cartList.innerHTML = "";
+
                 cartItems.forEach(item => {
                     const li = document.createElement("li");
 
-                    // Use nested book fields
-                    const bookTitle = item.book?.title || "Unknown";
-                    const bookPrice = item.book?.price || 0;
+                    const title = item.book?.title || "Unknown";
+                    const price = item.book?.price || 0;
                     const quantity = item.quantity || 0;
+                    const itemTotal = price * quantity;
 
-                    li.textContent = `${bookTitle} - ₱${bookPrice} x ${quantity}`;
+                    li.textContent = `${title} - ₱${price} x ${quantity} (₱${itemTotal})`;
 
                     const removeBtn = document.createElement("button");
                     removeBtn.textContent = "Remove";
-                    removeBtn.addEventListener("click", () => removeFromCart(item.id));
+                    removeBtn.addEventListener("click", () => {
+                        fetch(`/api/cart/remove/${item.id}`, { method: "DELETE" })
+                            .then(() => {
+                                renderCart();
+                                updateCartCount();
+                            })
+                            .catch(console.error);
+                    });
 
                     li.appendChild(removeBtn);
                     cartList.appendChild(li);
@@ -60,36 +44,28 @@ function loadCart() {
             }
 
             if (cartTotal) {
+                // Backend can optionally send a cartTotal, else calculate here
                 const total = cartItems.reduce((sum, item) => sum + (item.book?.price || 0) * item.quantity, 0);
                 cartTotal.textContent = total.toFixed(2);
-
             }
         })
         .catch(console.error);
 }
 
-function removeFromCart(cartItemId) {
-    fetch(`/api/cart/remove/${cartItemId}`, { method: "DELETE" })
-        .then(res => {
-            if (!res.ok) throw new Error("Remove failed");
-            loadCart();
-            updateCartCount();
-        })
-        .catch(console.error);
-}
-
 // ====================== CHECKOUT ======================
-function bindCheckoutButton() {
-    const checkoutBtn = document.getElementById("checkoutBtn");
-    if (!checkoutBtn) return;
-
+const checkoutBtn = document.getElementById("checkoutBtn");
+if (checkoutBtn) {
     checkoutBtn.addEventListener("click", () => {
         fetch("/api/cart/checkout", { method: "POST" })
-            .then(res => {
-                if (!res.ok) throw new Error("Checkout failed");
+            .then(res => res.json())
+            .then(order => {
+                if (!order) {
+                    alert("Cart is empty!");
+                    return;
+                }
                 alert("Checkout successful!");
-                loadCart();
-                loadOrders();
+                renderCart();
+                renderOrders();
                 updateCartCount();
             })
             .catch(console.error);
@@ -97,9 +73,9 @@ function bindCheckoutButton() {
 }
 
 // ====================== ORDER HISTORY ======================
-function loadOrders() {
+function renderOrders() {
     const orderList = document.getElementById("orderList");
-    if (!orderList) return; // skip if no order list on this page
+    if (!orderList) return;
 
     fetch("/api/cart/history")
         .then(res => res.json())
@@ -108,17 +84,19 @@ function loadOrders() {
 
             orders.forEach(order => {
                 const li = document.createElement("li");
+                li.classList.add("order-card");
                 let html = `
-                    <h3>Order #${order.id}</h3>
+                
+                    <h3>Order</h3>
                     <p>Date: ${new Date(order.orderDate).toLocaleString()}</p>
                     <p>Total: ₱${order.totalAmount.toFixed(2)}</p>
-                    <h4>Items:</h4><ul>
+                    <h4>Items:</h4>
+                    <ul>
                 `;
 
                 order.orderItems.forEach(item => {
                     html += `<li>
-                        <b>${item.title}</b> — ₱${item.price.toFixed(2)}
-                        (x${item.quantity})
+                        <b>${item.title}</b> — ₱${item.price.toFixed(2)} (x${item.quantity})
                     </li>`;
                 });
 
@@ -143,3 +121,19 @@ function updateCartCount() {
         })
         .catch(console.error);
 }
+
+// ====================== ADD TO CART BUTTONS ======================
+document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const bookId = btn.dataset.id;
+        if (!bookId) return;
+
+        fetch(`/api/cart/add/${bookId}`, { method: "POST" })
+            .then(() => {
+                alert("Book added to cart!");
+                renderCart();
+                updateCartCount();
+            })
+            .catch(console.error);
+    });
+});

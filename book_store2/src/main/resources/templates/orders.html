@@ -3,28 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Order History</title>
+    <style>
+        body {
+            background-color: rgba(255, 255, 255, 0.44);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            color: #333;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .order-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .order-card h3 {
+            color: #0984e3;
+            margin-bottom: 10px;
+        }
+
+        .order-card p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+
+        .order-card ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .order-card ul li {
+            margin-bottom: 5px;
+            list-style: none;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 15px 0;
+        }
+        a {
+            color: rgba(48, 47, 47, 0.91);
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-block;
+            font-size: 20px; /* bigger text */
+            padding: 5px 10px; /* add some clickable space */
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        h2 {
+            color: #000;  /* changed from white to black */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+
+
+    </style>
+
 </head>
 <body>
-
+<p><a href="/books">⬅ Store</a></p>
 <h2>Order History</h2>
 
-<ul>
-    <li th:each="order : ${orders}">
-        <h3>Order #<span th:text="${order.id}"></span></h3>
+<ul id="orderList">
+    <li th:each="order : ${orders}" class="order-card">
+        <h3>Order</h3>
         <p>Date: <span th:text="${order.orderDate}"></span></p>
         <p>Total: ₱<span th:text="${order.totalAmount}"></span></p>
 
         <ul>
             <li th:each="item : ${order.orderItems}">
-                <b th:text="${item.title}"></b>
-                (x<span th:text="${item.quantity}"></span>)
+                <b th:text="${item.title}"></b> (x<span th:text="${item.quantity}"></span>)
             </li>
         </ul>
         <hr />
     </li>
 </ul>
 
-<p><a href="/books">⬅ Back to store</a></p>
-
+<script src="/js/cart.js"></script>
 </body>
 </html>

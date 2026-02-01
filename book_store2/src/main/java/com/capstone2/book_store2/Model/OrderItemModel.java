@@ -13,7 +13,7 @@ public class OrderItemModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer bookId;
+    private Long bookId;
     private String title;
     private Double price;
     private int quantity;
