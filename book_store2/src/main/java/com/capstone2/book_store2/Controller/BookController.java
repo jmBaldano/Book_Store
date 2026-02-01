@@ -1,8 +1,9 @@
 package com.capstone2.book_store2.Controller;
 
-import com.capstone2.book_store2.Model.bookModel;
-import com.capstone2.book_store2.Repository.categoryRepository;
-import com.capstone2.book_store2.Service.bookService;
+import com.capstone2.book_store2.Model.BookModel;
+import com.capstone2.book_store2.Repository.CategoryRepository;
+import com.capstone2.book_store2.Service.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +13,13 @@ import java.util.List;
 
 
 @Controller
-public class bookController {
+@RequiredArgsConstructor
+public class BookController {
 
-    private final bookService bookService;
-    private final categoryRepository categoryRepo;
+    private final BookService bookService;
+    private final CategoryRepository categoryRepo;
 
     // Inject Service + Repository
-    public bookController(bookService bookService, categoryRepository categoryRepo) {
-        this.bookService = bookService;
-        this.categoryRepo = categoryRepo;
-    }
 
 
     @GetMapping("/books")
@@ -32,7 +30,7 @@ public class bookController {
     ) {
 
         // Ask the service for books (no logic here)
-        List<bookModel> books = bookService.getBooks(categoryId, q);
+        List<BookModel> books = bookService.getBooks(categoryId, q);
 
         // Add attributes for Thymeleaf
         model.addAttribute("books", books);

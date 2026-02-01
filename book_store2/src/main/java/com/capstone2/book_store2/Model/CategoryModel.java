@@ -6,23 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="books")
+@Table(name = "categories")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class bookModel {
+public class CategoryModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String title;
-    private String author;
-    private double price;
-    private String description;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    private categoryModel category;
-
+    @Column(nullable = false, unique = true)
+    private String name;
 }

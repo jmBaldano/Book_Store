@@ -1,23 +1,28 @@
 package com.capstone2.book_store2.Model;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name="books")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class userModel {
+public class BookModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    private String title;
+    private String author;
+    private double price;
+    private String description;
 
-    @Column(nullable = false)
-    private String password;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private CategoryModel category;
+
 }

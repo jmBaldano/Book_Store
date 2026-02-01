@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class cartItemModel {
+public class CartItemModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,6 @@
 package com.capstone2.book_store2.config;
 
-import com.capstone2.book_store2.Repository.userRepository;
+import com.capstone2.book_store2.Repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,7 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 public class SecurityConfig {
 
     @Bean
-    public UserDetailsService userDetailsService(userRepository repo) {
+    public UserDetailsService userDetailsService(UserRepository repo) {
         return username -> repo.findByUsername(username)
                 .map(u -> User.withUsername(u.getUsername())
                         .password(u.getPassword())

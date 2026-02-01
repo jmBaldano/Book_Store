@@ -1,7 +1,8 @@
 package com.capstone2.book_store2.Service;
 
-import com.capstone2.book_store2.Model.bookModel;
-import com.capstone2.book_store2.Repository.bookRepository;
+import com.capstone2.book_store2.Model.BookModel;
+import com.capstone2.book_store2.Repository.BookRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,22 +10,18 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class bookService {
+@RequiredArgsConstructor
+public class BookService {
 
-    private final bookRepository bookRepo;
-
-    // Constructor injection 
-    public bookService(bookRepository bookRepo) {
-        this.bookRepo = bookRepo;
-    }
+    private final BookRepository bookRepo;
 
 
-    public List<bookModel> getBooks(Integer categoryId, String q) {
+    public List<BookModel> getBooks(Integer categoryId, String q) {
 
         boolean hasQuery = q != null && !q.isBlank();
         boolean hasCategory = categoryId != null;
 
-        List<bookModel> books;
+        List<BookModel> books;
 
         // Case 1: Filter by category
         if (hasCategory) {

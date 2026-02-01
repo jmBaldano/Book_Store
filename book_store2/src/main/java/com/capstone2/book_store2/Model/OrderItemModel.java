@@ -7,7 +7,7 @@ import lombok.Data;
 @Entity
 @Table(name = "order_item_model")
 @Data
-public class orderItemModel {
+public class OrderItemModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +21,9 @@ public class orderItemModel {
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     @JsonBackReference
-    private orderModel order;
+    private OrderModel order;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bookId", insertable = false, updatable = false)
-    private bookModel book;
+    private BookModel book;
 }

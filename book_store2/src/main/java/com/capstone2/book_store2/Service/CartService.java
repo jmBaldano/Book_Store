@@ -1,40 +1,34 @@
 // CartService.java
 package com.capstone2.book_store2.Service;
 
-import com.capstone2.book_store2.Model.bookModel;
-import com.capstone2.book_store2.Model.cartItemModel;
-import com.capstone2.book_store2.Model.orderModel;
-import com.capstone2.book_store2.Model.orderItemModel;
-import com.capstone2.book_store2.Repository.bookRepository;
-import com.capstone2.book_store2.Repository.cartItemRepository;
-import com.capstone2.book_store2.Repository.orderRepository;
+import com.capstone2.book_store2.Model.BookModel;
+import com.capstone2.book_store2.Model.CartItemModel;
+import com.capstone2.book_store2.Model.OrderModel;
+import com.capstone2.book_store2.Model.OrderItemModel;
+import com.capstone2.book_store2.Repository.BookRepository;
+import com.capstone2.book_store2.Repository.CartItemRepository;
+import com.capstone2.book_store2.Repository.OrderRepository;
 import jakarta.transaction.Transactional;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@Data
-public class cartService {
+@RequiredArgsConstructor
+public class CartService {
 
-    private final cartItemRepository cartItemRepository;
-    private final orderRepository orderRepository;
-    private final bookRepository bookRepository;
-
-    public cartService(cartItemRepository cartItemRepository, orderRepository orderRepository, bookRepository bookRepository) {
-        this.cartItemRepository = cartItemRepository;
-        this.orderRepository = orderRepository;
-        this.bookRepository = bookRepository;
-    }
+    private final CartItemRepository cartItemRepository;
+    private final OrderRepository orderRepository;
+    private final BookRepository bookRepository;
 
     // Get cart items for a user
-    public List<cartItemModel> getCart(String username) {
+    public List<CartItemModel> getCart(String username) {
         return cartItemRepository.findByUsername(username);
     }
 
     // Add item to cart
-    public cartItemModel addToCart(cartItemModel item) {
+    public CartItemModel addToCart(CartItemModel item) {
         return cartItemRepository.save(item);
     }
 
@@ -46,22 +40,22 @@ public class cartService {
 
     // Checkout and create order
     @Transactional
-    public orderModel checkout(String username) {
-        List<cartItemModel> cartItems = cartItemRepository.findByUsername(username);
+    public OrderModel checkout(String username) {
+        List<CartItemModel> cartItems = cartItemRepository.findByUsername(username);
         if (cartItems.isEmpty()) return null;
 
-        orderModel order = new orderModel();
+        OrderModel order = new OrderModel();
         order.setUsername(username);
         order.setOrderDate(LocalDateTime.now());
 
-        List<orderItemModel> orderItems = cartItems.stream().map(cartItem -> {
-            orderItemModel orderItem = new orderItemModel();
+        List<OrderItemModel> orderItems = cartItems.stream().map(cartItem -> {
+            OrderItemModel orderItem = new OrderItemModel();
             orderItem.setBookId(cartItem.getBookId());
             orderItem.setTitle(cartItem.getTitle());
             orderItem.setPrice(cartItem.getPrice());
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setOrder(order);
-            bookModel book = bookRepository.findById(cartItem.getBookId()).orElse(null);
+            BookModel book = bookRepository.findById(cartItem.getBookId()).orElse(null);
             orderItem.setBook(book);
             return orderItem;
         }).toList();
@@ -78,12 +72,12 @@ public class cartService {
     }
 
     // Get order history
-    public List<orderModel> getOrderHistory(String username) {
-        List<orderModel> orders = orderRepository.findByUsernameOrderByOrderDateDesc(username);
+    public List<OrderModel> getOrderHistory(String username) {
+        List<OrderModel> orders = orderRepository.findByUsernameOrderByOrderDateDesc(username);
 
         // Set book for each order item
-        for (orderModel order : orders) {
-            for (orderItemModel item : order.getOrderItems()) {
+        for (OrderModel order : orders) {
+            for (OrderItemModel item : order.getOrderItems()) {
                 if (item.getBook() == null) {
                     item.setBook(bookRepository.findById(item.getBookId()).orElse(null));
                 }

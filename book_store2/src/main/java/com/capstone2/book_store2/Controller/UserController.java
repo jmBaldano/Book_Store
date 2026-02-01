@@ -1,8 +1,9 @@
 package com.capstone2.book_store2.Controller;
 
-import com.capstone2.book_store2.Model.userModel;
-import com.capstone2.book_store2.Service.userService;
+import com.capstone2.book_store2.Model.UserModel;
+import com.capstone2.book_store2.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,21 +15,19 @@ import org.springframework.web.bind.annotation.*;
  * - Delegates logic to Service
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
-public class userController {
+public class UserController {
 
-    private final userService userService;
+    private final UserService userService;
 
-    // Inject service only
-    public userController(userService userService) {
-        this.userService = userService;
-    }
+
 
 
       //Register endpoint
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody userModel user) {
+    public ResponseEntity<String> register(@RequestBody UserModel user) {
         try {
             userService.register(user);
             return ResponseEntity.ok("User registered successfully!");
@@ -42,7 +41,7 @@ public class userController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(
-            @RequestBody userModel user,
+            @RequestBody UserModel user,
             HttpServletRequest request
     ) {
         try {

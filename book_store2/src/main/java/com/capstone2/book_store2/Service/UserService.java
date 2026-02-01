@@ -1,7 +1,8 @@
 package com.capstone2.book_store2.Service;
 
-import com.capstone2.book_store2.Model.userModel;
-import com.capstone2.book_store2.Repository.userRepository;
+import com.capstone2.book_store2.Model.UserModel;
+import com.capstone2.book_store2.Repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,28 +15,19 @@ import org.springframework.stereotype.Service;
  * - Handles password encoding and authentication
  */
 @Service
-public class userService {
+@RequiredArgsConstructor
+public class UserService {
 
-    private final userRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-
-    // Constructor injection (best practice)
-    public userService(userRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-    }
-
     /**
      * Register a new user
      *
      * @param user user data from request
      * @throws RuntimeException if username exists or invalid data
      */
-    public void register(userModel user) {
+    public void register(UserModel user) {
 
         if (user.getUsername() == null || user.getPassword() == null) {
             throw new RuntimeException("Username and password are required");
