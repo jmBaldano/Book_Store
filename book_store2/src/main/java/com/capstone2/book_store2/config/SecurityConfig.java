@@ -50,13 +50,22 @@ public class SecurityConfig {
                                 "/login.html",
                                 "/register.html",
                                 "/",
-                                "/books"
+                                "/books",
+                                "/Book_details",
+                                "/books/details"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 // programmatic authentication in controller, so disable default form login
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                // Enable logout endpoint
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
                 // Ensure security context is stored in session
                 .securityContext(securityContext -> securityContext
                         .requireExplicitSave(false)

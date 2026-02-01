@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.title} + ' Details'">Book Details</title>
+    <style>
+        body {
+            background-color: #fff;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .details-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 32px 28px;
+        }
+        h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .author {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 18px;
+        }
+        .price {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+        .desc {
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+        .category {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 18px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 8px 16px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .back-link:hover {
+            background: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="details-container">
+    <h2 th:text="${book.title}"></h2>
+    <div class="author">by <span th:text="${book.author}"></span></div>
+    <div class="price">₱<span th:text="${#numbers.formatDecimal(book.price,1,'COMMA',2,'POINT')}"></span></div>
+    <div class="desc" th:text="${book.description}"></div>
+    <div class="category">Category: <span th:text="${book.category.name}"></span></div>
+    <button class="add-to-cart-btn"
+                th:attr="data-id=${book.id},
+                         data-title=${book.title},
+                         data-price=${book.price}">
+            Add to Cart
+        </button>
+    <a href="/books" class="back-link">⬅ Back to Store</a>
+</div>
+<script src="/js/cart.js"></script>
+</body>
+</html>

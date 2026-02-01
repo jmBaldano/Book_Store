@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Catalog</title>
+    <title>Book Store</title>
     <style>
         /* Reset */
         * {
@@ -196,10 +196,15 @@
 <body>
 
 <div class="top-bar">
-    <div th:if="${#authentication != null and #authentication.authenticated}">
-        Hello, <b th:text="${#authentication.name}"></b>
+    <div style="flex:1;display:flex;align-items:center;gap:15px;">
+        <span th:if="${#authentication != null and #authentication.authenticated}">
+            Hello, <b th:text="${#authentication.name}"></b>
+        </span>
+        <a href="/profile" th:if="${#authentication != null and #authentication.authenticated}" style="margin-left:15px;">Profile</a>
+        <form th:action="@{/logout}" method="post" th:if="${#authentication != null and #authentication.authenticated}" style="display:inline;margin:0;">
+            <button type="submit" style="background:none;border:none;color:#333;cursor:pointer;font-weight:bold;margin-left:10px;">Logout</button>
+        </form>
     </div>
-
     <div>
         <a href="/cart" class="cart-icon">
             🧺
@@ -212,7 +217,7 @@
     </div>
 </div>
 
-<h2>Book Catalog</h2>
+<h2>Welcome to "The Book Store"</h2>
 
 <form action="/books" method="get">
     <select name="categoryId">
@@ -230,7 +235,11 @@
 
 <ul>
     <li th:each="book : ${books}">
-        <h3 th:text="${book.title} + ' — ' + ${book.author}"></h3>
+        <h3>
+            <a th:href="@{'/books/details'(id=${book.id})}" style="text-decoration: none; color: inherit;">
+                <span th:text="${book.title}"></span> — <span th:text="${book.author}"></span>
+            </a>
+        </h3>
         <p>₱<span th:text="${#numbers.formatDecimal(book.price,1,'COMMA',2,'POINT')}"></span></p>
         <button class="add-to-cart-btn"
                 th:attr="data-id=${book.id},

@@ -40,4 +40,10 @@ public class BookController {
 
         return "books"; // books.html
     }
+    @GetMapping("/books/details")
+    public String bookDetails(@RequestParam Long id, Model model) {
+        BookModel book = bookService.getBookById(id);
+        model.addAttribute("book", book);
+        return "book_details";
+    }
 }

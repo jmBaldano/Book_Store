@@ -57,4 +57,7 @@ public class UserService {
         // Will throw AuthenticationException if invalid
         return authenticationManager.authenticate(token);
     }
+    public UserModel findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+    }
 }

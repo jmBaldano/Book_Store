@@ -61,4 +61,13 @@ public class UserController {
                     .body("Invalid username or password!");
         }
     }
+    // Profile details endpoint
+    @GetMapping("/me")
+    public UserModel getCurrentUser(Authentication authentication) {
+        // Return the current user's details (excluding password)
+        String username = authentication.getName();
+        UserModel user = userService.findByUsername(username);
+        user.setPassword(null); // Hide password
+        return user;
+    }
 }

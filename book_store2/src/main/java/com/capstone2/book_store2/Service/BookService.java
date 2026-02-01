@@ -46,4 +46,7 @@ public class BookService {
 
         return books;
     }
+    public BookModel getBookById(Long id) {
+        return bookRepo.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+    }
 }
