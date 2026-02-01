@@ -1,16 +1,13 @@
-// CartService.java
 package com.capstone2.book_store2.Service;
 
-import com.capstone2.book_store2.Model.BookModel;
-import com.capstone2.book_store2.Model.CartItemModel;
-import com.capstone2.book_store2.Model.OrderModel;
-import com.capstone2.book_store2.Model.OrderItemModel;
+import com.capstone2.book_store2.Model.*;
 import com.capstone2.book_store2.Repository.BookRepository;
 import com.capstone2.book_store2.Repository.CartItemRepository;
 import com.capstone2.book_store2.Repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,72 +15,76 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartService {
 
-    private final CartItemRepository cartItemRepository;
-    private final OrderRepository orderRepository;
-    private final BookRepository bookRepository;
+    private final CartItemRepository cartRepo;
+    private final BookRepository bookRepo;
+    private final OrderRepository orderRepo;
 
-    // Get cart items for a user
+    // Get cart
     public List<CartItemModel> getCart(String username) {
-        return cartItemRepository.findByUsername(username);
+        return cartRepo.findByUsername(username);
     }
 
-    // Add item to cart
-    public CartItemModel addToCart(CartItemModel item) {
-        return cartItemRepository.save(item);
-    }
-
-    // Remove item from cart
+    // Add or increment item
     @Transactional
-    public void removeFromCart(String username, Integer bookId) {
-        cartItemRepository.deleteByUsernameAndBookId(username, bookId);
+    public void addToCart(String username, Long bookId) {
+
+        CartItemModel item = cartRepo
+                .findByUsernameAndBookId(username, bookId)
+                .orElseGet(() -> {
+                    CartItemModel newItem = new CartItemModel();
+                    newItem.setUsername(username);
+                    newItem.setBook(bookRepo.findById(bookId).orElseThrow());
+                    newItem.setQuantity(0);
+                    return newItem;
+                });
+
+        item.setQuantity(item.getQuantity() + 1);
+        cartRepo.save(item);
     }
 
-    // Checkout and create order
+    // Remove item
+    @Transactional
+    public void removeFromCart(String username, Long cartItemId) {
+        cartRepo.deleteById(cartItemId);
+    }
+
+    // Checkout
     @Transactional
     public OrderModel checkout(String username) {
-        List<CartItemModel> cartItems = cartItemRepository.findByUsername(username);
+
+        List<CartItemModel> cartItems = cartRepo.findByUsername(username);
         if (cartItems.isEmpty()) return null;
 
         OrderModel order = new OrderModel();
         order.setUsername(username);
         order.setOrderDate(LocalDateTime.now());
 
-        List<OrderItemModel> orderItems = cartItems.stream().map(cartItem -> {
-            OrderItemModel orderItem = new OrderItemModel();
-            orderItem.setBookId(cartItem.getBookId());
-            orderItem.setTitle(cartItem.getTitle());
-            orderItem.setPrice(cartItem.getPrice());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setOrder(order);
-            BookModel book = bookRepository.findById(cartItem.getBookId()).orElse(null);
-            orderItem.setBook(book);
-            return orderItem;
+        List<OrderItemModel> orderItems = cartItems.stream().map(ci -> {
+            OrderItemModel item = new OrderItemModel();
+            item.setBook(ci.getBook());
+            item.setTitle(ci.getBook().getTitle());
+            item.setPrice(ci.getBook().getPrice());
+            item.setQuantity(ci.getQuantity());
+            item.setOrder(order);
+            return item;
         }).toList();
 
         order.setOrderItems(orderItems);
-        double total = orderItems.stream().mapToDouble(oi -> oi.getPrice() * oi.getQuantity()).sum();
+
+        double total = orderItems.stream()
+                .mapToDouble(i -> i.getPrice() * i.getQuantity())
+                .sum();
+
         order.setTotalAmount(total);
 
-        orderRepository.save(order);
-        cartItemRepository.deleteAll(cartItems); // clear cart after checkout
-
+        orderRepo.save(order);
+        cartRepo.deleteByUsername(username);
 
         return order;
     }
 
-    // Get order history
     public List<OrderModel> getOrderHistory(String username) {
-        List<OrderModel> orders = orderRepository.findByUsernameOrderByOrderDateDesc(username);
-
-        // Set book for each order item
-        for (OrderModel order : orders) {
-            for (OrderItemModel item : order.getOrderItems()) {
-                if (item.getBook() == null) {
-                    item.setBook(bookRepository.findById(item.getBookId()).orElse(null));
-                }
-            }
-        }
-        return orders;
+        return orderRepo.findByUsernameOrderByOrderDateDesc(username);
     }
 
 }

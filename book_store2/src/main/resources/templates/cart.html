@@ -1,38 +1,101 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Shopping Cart</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        button { margin: 5px; }
-        .box { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; }
-    </style>
+    <title>Your Cart</title>
 </head>
 <body>
 
-<h1>Shopping Cart</h1>
+<h2>Your Cart</h2>
 
-<!-- Cart Section -->
-<div class="box">
-    <h2>My Cart</h2>
-    <ul id="cartList"></ul>
-    <p><strong>Total:</strong> ₱<span id="cartTotal">0</span></p>
-    <button onclick="checkout()">Checkout</button>
-</div>
+<ul id="cartList"></ul>
+<p>Total: ₱<span id="cartTotal">0.00</span></p>
 
-<!-- Add to Cart -->
-<!--<div class="box">-->
-<!--    <h2>Add Book to Cart</h2>-->
-<!--    <button onclick="addToCart()">Add Sample Book</button>-->
-<!--</div>-->
+<button id="checkoutBtn">Checkout</button>
 
-<!-- Order History -->
-<div class="box">
-    <h2>Order History</h2>
-    <ul id="orderList"></ul>
-</div>
+<p><a href="/books">⬅ Back to store</a></p>
 
-<script src="../static/js/cart.js"></script>
+<script src="/js/cart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", loadCart);
+</script>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>My Shopping Cart</title>-->
+<!--    <style>-->
+<!--        body { font-family: Arial, sans-serif; }-->
+<!--        button { margin: 5px; }-->
+<!--        .box { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>Shopping Cart</h1>-->
+
+<!--&lt;!&ndash; Cart Section &ndash;&gt;-->
+<!--<div class="box">-->
+<!--    <h2>My Cart</h2>-->
+<!--    <ul id="cartList"></ul>-->
+<!--    <p><strong>Total:</strong> ₱<span id="cartTotal">0</span></p>-->
+<!--    <button onclick="checkout()">Checkout</button>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Add to Cart &ndash;&gt;-->
+<!--&lt;!&ndash;<div class="box">&ndash;&gt;-->
+<!--&lt;!&ndash;    <h2>Add Book to Cart</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;    <button onclick="addToCart()">Add Sample Book</button>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--&lt;!&ndash; Order History &ndash;&gt;-->
+<!--<div class="box">-->
+<!--    <h2>Order History</h2>-->
+<!--    <ul id="orderList"></ul>-->
+<!--</div>-->
+
+<!--<script src="../static/js/cart.js"></script>-->
+<!--</body>-->
+<!--</html>-->

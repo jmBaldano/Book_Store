@@ -1,153 +1,145 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-    // Bind Add-to-Cart buttons (Thymeleaf-rendered)
-    document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            addToCart(
-                btn.dataset.id,
-                btn.dataset.title,
-                btn.dataset.price
-            );
-        });
-    });
-
-    // Checkout button (safe binding)
-    const checkoutBtn = document.getElementById("checkoutBtn");
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener("click", checkout);
-    }
-
+    bindAddToCartButtons();
+    bindCheckoutButton();
     loadCart();
     loadOrders();
+    updateCartCount();
 });
 
-// ================= CART =================
+// ====================== ADD TO CART ======================
+function bindAddToCartButtons() {
+    const addBtns = document.querySelectorAll(".add-to-cart-btn");
+    if (!addBtns) return;
 
+    addBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const bookId = btn.dataset.id;
+            if (!bookId) return;
+
+            fetch(`/api/cart/add/${bookId}`, { method: "POST" })
+                .then(res => {
+                    if (!res.ok) throw new Error("Add to cart failed");
+                    alert("Book added to cart!");
+                    loadCart();
+                    updateCartCount();
+                })
+                .catch(console.error);
+        });
+    });
+}
+
+// ====================== CART ======================
 function loadCart() {
+    const cartList = document.getElementById("cartList");
+    const cartTotal = document.getElementById("cartTotal");
+
+    if (!cartList && !cartTotal) return; // no cart elements on this page
+
     fetch("/api/cart")
-        .then(res => {
-            if (!res.ok) throw new Error("Failed to load cart");
-            return res.json();
-        })
+        .then(res => res.json())
         .then(cartItems => {
-            const cartList = document.getElementById("cartList");
-            const cartTotal = document.getElementById("cartTotal");
+            if (cartList) {
+                cartList.innerHTML = "";
+                cartItems.forEach(item => {
+                    const li = document.createElement("li");
 
-            cartList.innerHTML = "";
-            let total = 0;
+                    // Use nested book fields
+                    const bookTitle = item.book?.title || "Unknown";
+                    const bookPrice = item.book?.price || 0;
+                    const quantity = item.quantity || 0;
 
-            cartItems.forEach(item => {
-                total += item.price * item.quantity;
+                    li.textContent = `${bookTitle} - ₱${bookPrice} x ${quantity}`;
 
-                const li = document.createElement("li");
-                li.textContent = `${item.title} - ₱${item.price} x ${item.quantity}`;
+                    const removeBtn = document.createElement("button");
+                    removeBtn.textContent = "Remove";
+                    removeBtn.addEventListener("click", () => removeFromCart(item.id));
 
-                const removeBtn = document.createElement("button");
-                removeBtn.textContent = "Remove";
-                removeBtn.addEventListener("click", () => removeFromCart(item.bookId));
-
-                li.appendChild(removeBtn);
-                cartList.appendChild(li);
-            });
-
-            cartTotal.textContent = total.toFixed(2);
-        })
-        .catch(err => console.error(err));
-}
-
-function addToCart(bookId, title, price) {
-    fetch("/api/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            bookId,
-            title,
-            price,
-            quantity: 1
-        })
-    })
-        .then(res => {
-            if (!res.ok) throw new Error("Add to cart failed");
-            return res.json();
-        })
-        .then(() => {
-            alert("Book added to cart!");
-            loadCart();
-        })
-        .catch(err => console.error(err));
-}
-
-function removeFromCart(bookId) {
-    fetch(`/api/cart/remove/${bookId}`, {
-        method: "DELETE"
-    })
-        .then(() => loadCart())
-        .catch(err => console.error(err));
-}
-
-// ================= CHECKOUT =================
-
-function checkout() {
-    fetch("/api/cart/checkout", {
-        method: "POST"
-    })
-        .then(res => {
-            if (!res.ok) throw new Error("Checkout failed");
-            return res.json();
-        })
-        .then(order => {
-            if (!order) {
-                alert("Cart is empty!");
-                return;
+                    li.appendChild(removeBtn);
+                    cartList.appendChild(li);
+                });
             }
-            alert("Checkout successful!");
-            loadCart();
-            loadOrders();
+
+            if (cartTotal) {
+                const total = cartItems.reduce((sum, item) => sum + (item.book?.price || 0) * item.quantity, 0);
+                cartTotal.textContent = total.toFixed(2);
+
+            }
         })
-        .catch(err => console.error(err));
+        .catch(console.error);
 }
 
-// ================= ORDER HISTORY =================
-
-function loadOrders() {
-    fetch("/api/cart/history")
+function removeFromCart(cartItemId) {
+    fetch(`/api/cart/remove/${cartItemId}`, { method: "DELETE" })
         .then(res => {
-            if (!res.ok) throw new Error("Failed to load orders");
-            return res.json();
+            if (!res.ok) throw new Error("Remove failed");
+            loadCart();
+            updateCartCount();
         })
+        .catch(console.error);
+}
+
+// ====================== CHECKOUT ======================
+function bindCheckoutButton() {
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    if (!checkoutBtn) return;
+
+    checkoutBtn.addEventListener("click", () => {
+        fetch("/api/cart/checkout", { method: "POST" })
+            .then(res => {
+                if (!res.ok) throw new Error("Checkout failed");
+                alert("Checkout successful!");
+                loadCart();
+                loadOrders();
+                updateCartCount();
+            })
+            .catch(console.error);
+    });
+}
+
+// ====================== ORDER HISTORY ======================
+function loadOrders() {
+    const orderList = document.getElementById("orderList");
+    if (!orderList) return; // skip if no order list on this page
+
+    fetch("/api/cart/history")
+        .then(res => res.json())
         .then(orders => {
-            const orderList = document.getElementById("orderList");
-            orderList.innerHTML = ""; // clear old orders
+            orderList.innerHTML = "";
 
             orders.forEach(order => {
                 const li = document.createElement("li");
-
-                // Build HTML for the order
-                let orderHTML = `
+                let html = `
                     <h3>Order #${order.id}</h3>
                     <p>Date: ${new Date(order.orderDate).toLocaleString()}</p>
                     <p>Total: ₱${order.totalAmount.toFixed(2)}</p>
-                    <h4>Items:</h4>
-                    <ul>
+                    <h4>Items:</h4><ul>
                 `;
 
-                // Loop through each order item
                 order.orderItems.forEach(item => {
-                    orderHTML += `
-                        <li>
-                            <p><b>${item.title}</b> — ₱${item.price.toFixed(2)}</p>
-                            <p>Quantity: ${item.quantity}</p>
-                            <p>Description: ${item.description || 'No description available'}</p>
-                            <p>Author: ${item.author || 'Unknown'}</p>
-                        </li>
-                    `;
+                    html += `<li>
+                        <b>${item.title}</b> — ₱${item.price.toFixed(2)}
+                        (x${item.quantity})
+                    </li>`;
                 });
 
-                orderHTML += "</ul><hr/>";
-                li.innerHTML = orderHTML;
+                html += "</ul><hr/>";
+                li.innerHTML = html;
                 orderList.appendChild(li);
             });
         })
-        .catch(err => console.error(err));
+        .catch(console.error);
 }
 
+// ====================== CART COUNT ======================
+function updateCartCount() {
+    const cartCountEl = document.getElementById("cartCount");
+    if (!cartCountEl) return;
+
+    fetch("/api/cart")
+        .then(res => res.json())
+        .then(cartItems => {
+            const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            cartCountEl.textContent = count;
+        })
+        .catch(console.error);
+}

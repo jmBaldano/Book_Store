@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "cart_items")
 public class CartItemModel {
 
     @Id
@@ -12,9 +13,11 @@ public class CartItemModel {
     private Long id;
 
     private String username;
-    private Integer bookId;
-    private String title;
-    private Double price;
+
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private BookModel book;
+
     private int quantity;
 
 

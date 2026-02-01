@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+</head>
+<body>
+
+<h2>Order History</h2>
+
+<ul>
+    <li th:each="order : ${orders}">
+        <h3>Order #<span th:text="${order.id}"></span></h3>
+        <p>Date: <span th:text="${order.orderDate}"></span></p>
+        <p>Total: ₱<span th:text="${order.totalAmount}"></span></p>
+
+        <ul>
+            <li th:each="item : ${order.orderItems}">
+                <b th:text="${item.title}"></b>
+                (x<span th:text="${item.quantity}"></span>)
+            </li>
+        </ul>
+        <hr />
+    </li>
+</ul>
+
+<p><a href="/books">⬅ Back to store</a></p>
+
+</body>
+</html>

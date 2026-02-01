@@ -1,4 +1,3 @@
-// CartController.java
 package com.capstone2.book_store2.Controller;
 
 import com.capstone2.book_store2.Model.CartItemModel;
@@ -7,6 +6,7 @@ import com.capstone2.book_store2.Service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -16,40 +16,28 @@ public class CartController {
 
     private final CartService cartService;
 
-    // Get current user's cart
     @GetMapping
-    public List<CartItemModel> getCart(Authentication authentication) {
-        String username = authentication.getName();
-        return cartService.getCart(username);
+    public List<CartItemModel> getCart(Authentication auth) {
+        return cartService.getCart(auth.getName());
     }
 
-    // Add to cart
-    @PostMapping("/add")
-    public CartItemModel addToCart(@RequestBody CartItemModel item, Authentication authentication) {
-        String username = authentication.getName();
-        item.setUsername(username); // set username in item
-        return cartService.addToCart(item);
+    @PostMapping("/add/{bookId}")
+    public void addToCart(@PathVariable Long bookId, Authentication auth) {
+        cartService.addToCart(auth.getName(), bookId);
     }
 
-    // Remove from cart
-    @DeleteMapping("/remove/{bookId}")
-    public void removeFromCart(@PathVariable Integer bookId, Authentication authentication) {
-        String username = authentication.getName();
-        cartService.removeFromCart(username, bookId);
+    @DeleteMapping("/remove/{cartItemId}")
+    public void removeFromCart(@PathVariable Long cartItemId, Authentication auth) {
+        cartService.removeFromCart(auth.getName(), cartItemId);
     }
 
-    // Checkout
     @PostMapping("/checkout")
-    public OrderModel checkout(Authentication authentication) {
-        String username = authentication.getName();
-        return cartService.checkout(username);
+    public OrderModel checkout(Authentication auth) {
+        return cartService.checkout(auth.getName());
     }
-
-    // Order history
     @GetMapping("/history")
-    public List<OrderModel> getOrderHistory(Authentication authentication) {
-        String username = authentication.getName();
-        return cartService.getOrderHistory(username);
+    public List<OrderModel> orderHistory(Authentication auth) {
+        return cartService.getOrderHistory(auth.getName());
     }
-}
 
+}
