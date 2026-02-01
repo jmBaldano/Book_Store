@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Shopping Cart</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        button { margin: 5px; }
+        .box { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>Shopping Cart</h1>
+
+<!-- Cart Section -->
+<div class="box">
+    <h2>My Cart</h2>
+    <ul id="cartList"></ul>
+    <p><strong>Total:</strong> ₱<span id="cartTotal">0</span></p>
+    <button onclick="checkout()">Checkout</button>
+</div>
+
+<!-- Add to Cart -->
+<div class="box">
+    <h2>Add Book to Cart</h2>
+    <button onclick="addToCart()">Add Sample Book</button>
+</div>
+
+<!-- Order History -->
+<div class="box">
+    <h2>Order History</h2>
+    <ul id="orderList"></ul>
+</div>
+
+<script src="../static/js/cart.js"></script>
+</body>
+</html>

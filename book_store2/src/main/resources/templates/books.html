@@ -5,24 +5,29 @@
     <title>Book Catalog</title>
 </head>
 <body>
-<div th:if="${#authentication.authenticated}">
+
+<div th:if="${#authentication != null and #authentication.authenticated}">
     Hello, <b th:text="${#authentication.name}"></b>
 </div>
+
 <h2>Book Catalog</h2>
 
 <form action="/books" method="get">
     <label for="category">Category:</label>
     <select id="category" name="categoryId">
-        <option value="" th:text="'All Categories'">All Categories</option>
+        <option value="">All Categories</option>
         <th:block th:each="cat : ${categories}">
             <option th:value="${cat.id}"
                     th:text="${cat.name}"
-                    th:selected="${cat.id} == ${selectedCategory}"></option>
+                    th:selected="${cat.id == selectedCategory}">
+            </option>
         </th:block>
     </select>
 
     <label for="q">Search:</label>
-    <input id="q" name="q" type="text" th:value="${q}" placeholder="Title or author" />
+    <input id="q" name="q" type="text"
+           th:value="${q}"
+           placeholder="Title or author" />
 
     <button type="submit">Filter</button>
 </form>
@@ -36,15 +41,69 @@
 <ul>
     <li th:each="book : ${books}">
         <h3 th:text="${book.title} + ' — ' + ${book.author}"></h3>
-        <p>Price: <span th:text="${book.price}"></span></p>
+
+        <p>
+            Price:
+            <span th:text="${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}"></span>
+        </p>
+
         <p th:text="${book.description}"></p>
-        <p>Category: <span th:text="${book.category != null ? book.category.name : '—'}"></span></p>
-        <button>Add to cart</button>
+
+        <p>
+            Category:
+            <span th:text="${book.category != null ? book.category.name : '—'}"></span>
+        </p>
+
+        <!-- Add to Cart -->
+        <button type="button"
+                class="add-to-cart-btn"
+                th:attr="data-id=${book.id},
+                         data-title=${book.title},
+                         data-price=${book.price}">
+            Add to Cart
+        </button>
+
         <hr />
     </li>
 </ul>
 
+<!-- Cart Section -->
+<h2>Your Cart</h2>
+<ul id="cartList"></ul>
+<p>Total: ₱<span id="cartTotal">0.00</span></p>
+
+<button id="checkoutBtn">Checkout</button>
+
+<!-- Order History -->
+<h2>Order History</h2>
+<ul id="orderList">
+    <li th:each="order : ${orders}">
+        <h3>Order #<span th:text="${order.id}"></span></h3>
+        <p>Date: <span th:text="${order.orderDate}"></span></p>
+        <p>Total: ₱<span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}"></span></p>
+
+        <h4>Items:</h4>
+        <ul>
+            <li th:each="item : ${order.orderItems}">
+                <p><b th:text="${item.title}"></b> — ₱<span th:text="${item.price}"></span></p>
+                <p>Quantity: <span th:text="${item.quantity}"></span></p>
+                <!-- Full book info -->
+                <p th:text="${item.book != null ? item.book.description : 'No description'}"></p>
+                <p th:text="${item.book != null ? 'Author: ' + item.book.author : ''}"></p>
+            </li>
+        </ul>
+        <hr />
+    </li>
+</ul>
+
+
 <p><a href="/">Back to home</a></p>
 
+<script src="/js/cart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    loadOrders();
+});
+</script>
 </body>
 </html>
