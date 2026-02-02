@@ -1,20 +1,154 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Your Cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f7f7f7;
+            min-height: 100vh;
+            padding: 30px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+
+        .cart-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+
+        #cartList {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        #cartList li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+        }
+
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+        }
+
+        #checkoutBtn {
+            background: #333;
+            color: #fff;
+        }
+
+        #checkoutBtn:hover {
+            background: #555;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #333;
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .back-link a:hover {
+            transform: scale(1.05);
+            text-decoration: underline;
+        }
+
+
+        .empty-cart {
+            text-align: center;
+            color: #777;
+            padding: 40px 0;
+        }
+
+
+        @media (max-width: 600px) {
+            #cartList li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .cart-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
 <h2>Your Cart</h2>
 
-<ul id="cartList"></ul>
-<p>Total: ₱<span id="cartTotal">0.00</span></p>
+<div class="cart-container">
 
-<button id="checkoutBtn">Checkout</button>
+    <ul id="cartList"></ul>
 
-<p><a href="/books">⬅ Back to store</a></p>
+    <div class="cart-total">
+        <span>Total</span>
+        <span>₱<span id="cartTotal">0.00</span></span>
+    </div>
+
+    <div class="cart-actions">
+        <button id="checkoutBtn">Checkout</button>
+    </div>
+
+    <div class="back-link">
+        <a href="/books">← Back to store</a>
+    </div>
+
+</div>
 
 <script src="/js/cart.js"></script>
 <script>
@@ -23,79 +157,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>My Shopping Cart</title>-->
-<!--    <style>-->
-<!--        body { font-family: Arial, sans-serif; }-->
-<!--        button { margin: 5px; }-->
-<!--        .box { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<h1>Shopping Cart</h1>-->
-
-<!--&lt;!&ndash; Cart Section &ndash;&gt;-->
-<!--<div class="box">-->
-<!--    <h2>My Cart</h2>-->
-<!--    <ul id="cartList"></ul>-->
-<!--    <p><strong>Total:</strong> ₱<span id="cartTotal">0</span></p>-->
-<!--    <button onclick="checkout()">Checkout</button>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Add to Cart &ndash;&gt;-->
-<!--&lt;!&ndash;<div class="box">&ndash;&gt;-->
-<!--&lt;!&ndash;    <h2>Add Book to Cart</h2>&ndash;&gt;-->
-<!--&lt;!&ndash;    <button onclick="addToCart()">Add Sample Book</button>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-<!--&lt;!&ndash; Order History &ndash;&gt;-->
-<!--<div class="box">-->
-<!--    <h2>Order History</h2>-->
-<!--    <ul id="orderList"></ul>-->
-<!--</div>-->
-
-<!--<script src="../static/js/cart.js"></script>-->
-<!--</body>-->
-<!--</html>-->

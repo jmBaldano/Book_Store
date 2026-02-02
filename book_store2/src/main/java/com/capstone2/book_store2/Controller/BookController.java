@@ -19,26 +19,20 @@ public class BookController {
     private final BookService bookService;
     private final CategoryRepository categoryRepo;
 
-    // Inject Service + Repository
-
 
     @GetMapping("/books")
-    public String listBooks(
-            @RequestParam(required = false) Integer categoryId,
-            @RequestParam(required = false) String q,
-            Model model
-    ) {
+    public String listBooks(@RequestParam(required = false) Integer categoryId, @RequestParam(required = false) String q, Model model) {
 
-        // Ask the service for books (no logic here)
+        //ask service for books
         List<BookModel> books = bookService.getBooks(categoryId, q);
 
-        // Add attributes for Thymeleaf
+        //attributes for Thymeleaf
         model.addAttribute("books", books);
         model.addAttribute("categories", categoryRepo.findAll());
         model.addAttribute("selectedCategory", categoryId);
         model.addAttribute("q", q);
 
-        return "books"; // books.html
+        return "books";
     }
     @GetMapping("/books/details")
     public String bookDetails(@RequestParam Long id, Model model) {

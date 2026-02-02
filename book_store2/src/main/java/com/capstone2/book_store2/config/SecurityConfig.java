@@ -27,18 +27,17 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    // expose AuthenticationManager for programmatic authentication in your controller
+    // expose AuthenticationManager for programmatic authentication in controller
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     // SecurityFilterChain: permit /auth/** (login/register endpoints) and static assets,
-    // require authentication for all other routes (e.g. /books).
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // disable CSRF - can be re-enabled with proper CSRF token handling later
+                // disable CSRF
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -52,7 +51,9 @@ public class SecurityConfig {
                                 "/",
                                 "/books",
                                 "/Book_details",
-                                "/books/details"
+                                "/books/details",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -66,7 +67,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
-                // Ensure security context is stored in session
+                //security context is stored in session
                 .securityContext(securityContext -> securityContext
                         .requireExplicitSave(false)
                 );

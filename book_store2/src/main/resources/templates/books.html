@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Store</title>
+
     <style>
         /* Reset */
         * {
@@ -14,45 +15,52 @@
         }
 
         body {
-            background-color: #fff; /* clean white background */
+            background-color: #fff;
             min-height: 100vh;
-            padding: 20px;
             color: #333;
         }
 
-        /* Top Bar */
+        /* NAVBAR */
         .top-bar {
+            position: sticky;
+            top: 0;
+            background: #fff;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding: 0 10px;
-            flex-wrap: wrap;
+            padding: 15px 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            z-index: 100;
         }
 
-        .top-bar div {
+        .nav-left {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav-right {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
+            gap: 22px;
         }
 
-        .top-bar b {
-            font-weight: bold;
-            margin-right: 15px;
+        .nav-right span {
+            font-size: 14px;
         }
 
-        .cart-icon {
-            position: relative;
-            cursor: pointer;
-            margin-left: 10px;
+        .nav-right a {
             text-decoration: none;
             color: #333;
             display: flex;
             align-items: center;
+            font-size: 14px;
         }
 
-        .cart-icon span {
-            margin-left: 5px;
+        /* Cart */
+        .cart-icon {
+            position: relative;
+            font-size: 20px;
+            font-weight: bold;
         }
 
         .cart-count {
@@ -66,20 +74,35 @@
             font-size: 12px;
         }
 
-        /* Heading */
+        /* Text nav links */
+        .nav-link {
+            font-weight: bold;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            transform: scale(1.1);
+            color: #000;
+        }
+
+        /* PAGE CONTENT */
+        main {
+            padding: 30px;
+        }
+
         h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 32px;
         }
 
-        /* Filter Form */
+        /* Filter */
         form {
             display: flex;
-            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 30px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         select, input {
@@ -87,8 +110,15 @@
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 16px;
-            min-width: 150px;
-            flex: 1;
+            min-width: 160px;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        select:hover,
+        select:focus {
+            border-color: #333;
+            transform: scale(1.03);
+            outline: none;
         }
 
         button[type="submit"] {
@@ -98,57 +128,54 @@
             background-color: #333;
             color: #fff;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        button[type="submit"]:hover {
-            background-color: #555;
-        }
-
-        /* Book List */
+        /* Book Grid */
         ul {
             list-style: none;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* wider cards */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 25px;
         }
 
         li {
             background: #fff;
-            border-radius: 0; /* remove roundness */
             padding: 20px;
-            height: 380px; /* taller rectangular shape */
+            height: 360px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-
-        li:hover {
-            transform: translateY(-5px);
         }
 
         li h3 {
             font-size: 18px;
-            margin-bottom: 15px;
-            color: #333;
+            margin-bottom: auto;
         }
 
-        li p {
+        li h3 a {
+            color: #333;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s ease, text-decoration 0.2s ease;
+        }
+
+        li h3 a:hover {
+            transform: scale(1.05);
+            text-decoration: underline;
+        }
+
+        .price {
             font-size: 16px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin: 12px 0 8px;
         }
 
         .add-to-cart-btn {
             padding: 12px;
             border: none;
-            border-radius: 4px; /* smaller rounding */
             background-color: #333;
             color: #fff;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .add-to-cart-btn:hover {
@@ -159,100 +186,84 @@
         @media (max-width: 768px) {
             .top-bar {
                 flex-direction: column;
-                align-items: flex-start;
                 gap: 10px;
             }
 
-            form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            select, input, button[type="submit"] {
-                width: 100%;
-            }
-
-            h2 {
-                font-size: 28px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            ul {
-                grid-template-columns: 1fr;
-            }
-
-            li h3 {
-                font-size: 16px;
-            }
-
-            li p {
-                font-size: 14px;
+            .nav-right {
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
     </style>
-
 </head>
+
 <body>
 
+<!-- NAVBAR -->
 <div class="top-bar">
-    <div style="flex:1;display:flex;align-items:center;gap:15px;">
+    <div class="nav-left">
+        The Book Store
+    </div>
+
+    <div class="nav-right">
         <span th:if="${#authentication != null and #authentication.authenticated}">
             Hello, <b th:text="${#authentication.name}"></b>
         </span>
-        <a href="/profile" th:if="${#authentication != null and #authentication.authenticated}" style="margin-left:15px;">Profile</a>
-        <form th:action="@{/logout}" method="post" th:if="${#authentication != null and #authentication.authenticated}" style="display:inline;margin:0;">
-            <button type="submit" style="background:none;border:none;color:#333;cursor:pointer;font-weight:bold;margin-left:10px;">Logout</button>
-        </form>
-    </div>
-    <div>
+
         <a href="/cart" class="cart-icon">
-            🧺
+            🛒
             <span id="cartCount" class="cart-count">0</span>
         </a>
-        <a href="/orders" class="cart-icon">
-            📜
-            <span>Order History</span>
-        </a>
+
+        <a href="/orders" class="nav-link">Order History</a>
+        <a href="/profile" class="nav-link">Profile</a>
     </div>
 </div>
 
-<h2>Welcome to "The Book Store"</h2>
+<main>
+    <h2>Welcome to "The Book Store"</h2>
 
-<form action="/books" method="get">
-    <select name="categoryId">
-        <option value="">All Categories</option>
-        <option th:each="cat : ${categories}"
-                th:value="${cat.id}"
-                th:text="${cat.name}"
-                th:selected="${cat.id == selectedCategory}">
-        </option>
-    </select>
+    <form action="/books" method="get">
+        <select name="categoryId">
+            <option value="">All Categories</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}"
+                    th:selected="${cat.id == selectedCategory}">
+            </option>
+        </select>
 
-    <input name="q" th:value="${q}" placeholder="Title or author" />
-    <button type="submit">Filter</button>
-</form>
+        <input name="q" th:value="${q}" placeholder="Title or author" />
+        <button type="submit">Filter</button>
+    </form>
 
-<ul>
-    <li th:each="book : ${books}">
-        <h3>
-            <a th:href="@{'/books/details'(id=${book.id})}" style="text-decoration: none; color: inherit;">
-                <span th:text="${book.title}"></span> — <span th:text="${book.author}"></span>
-            </a>
-        </h3>
-        <p>₱<span th:text="${#numbers.formatDecimal(book.price,1,'COMMA',2,'POINT')}"></span></p>
-        <button class="add-to-cart-btn"
-                th:attr="data-id=${book.id},
-                         data-title=${book.title},
-                         data-price=${book.price}">
-            Add to Cart
-        </button>
-    </li>
-</ul>
+    <ul>
+        <li th:each="book : ${books}">
+            <h3>
+                <a th:href="@{'/books/details'(id=${book.id})}">
+                    <span th:text="${book.title}"></span> —
+                    <span th:text="${book.author}"></span>
+                </a>
+            </h3>
+
+            <div class="price">
+                ₱<span th:text="${#numbers.formatDecimal(book.price,1,'COMMA',2,'POINT')}"></span>
+            </div>
+
+            <button class="add-to-cart-btn"
+                    th:attr="data-id=${book.id},
+                             data-title=${book.title},
+                             data-price=${book.price}">
+                Add to Cart
+            </button>
+        </li>
+    </ul>
+</main>
 
 <script src="/js/cart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", updateCartCount);
 </script>
+
 </body>
 </html>

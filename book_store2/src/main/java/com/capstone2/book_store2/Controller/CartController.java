@@ -34,13 +34,11 @@ public class CartController {
         cartService.removeFromCart(auth.getName(), cartItemId);
     }
 
-    // Checkout
     @PostMapping("/checkout")
     public OrderModel checkout(Authentication auth) {
         return cartService.checkout(auth.getName());
     }
 
-    // Order history
     @GetMapping("/history")
     public List<OrderModel> orderHistory(Authentication auth) {
         return cartService.getOrderHistory(auth.getName());

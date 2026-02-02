@@ -9,11 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * REST Controller for authentication endpoints
- * - Handles HTTP requests
- * - Delegates logic to Service
- */
+//REST Controller for authentication
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -21,10 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
-
-
-
-      //Register endpoint
+      //register endpoint
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserModel user) {
@@ -45,7 +38,7 @@ public class UserController {
             HttpServletRequest request
     ) {
         try {
-            // Authenticate via service
+            // userService authenticare
             Authentication auth =
                     userService.login(user.getUsername(), user.getPassword());
 

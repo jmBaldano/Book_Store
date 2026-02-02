@@ -20,7 +20,7 @@ public class SpringBeanConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Simple data loader for beginners: seeds a few categories and books if DB is empty
+    // add categories and books if DB is empty
     @Bean
     public CommandLineRunner dataLoader(CategoryRepository catRepo, BookRepository bookRepo) {
         return args -> {

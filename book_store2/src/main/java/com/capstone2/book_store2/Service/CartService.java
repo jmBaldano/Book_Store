@@ -19,12 +19,10 @@ public class CartService {
     private final BookRepository bookRepo;
     private final OrderRepository orderRepo;
 
-    // =================== GET CART ===================
     public List<CartItemModel> getCart(String username) {
         return cartRepo.findByUsername(username);
     }
 
-    // =================== ADD TO CART ===================
     @Transactional
     public void addToCart(String username, Long bookId) {
         CartItemModel item = cartRepo
@@ -42,7 +40,6 @@ public class CartService {
         cartRepo.save(item);
     }
 
-    // =================== REMOVE FROM CART ===================
     @Transactional
     public void removeFromCart(String username, Long cartItemId) {
         CartItemModel item = cartRepo.findById(cartItemId)
@@ -55,7 +52,6 @@ public class CartService {
         cartRepo.delete(item);
     }
 
-    // =================== CHECKOUT ===================
     @Transactional
     public OrderModel checkout(String username) {
 
@@ -69,7 +65,7 @@ public class CartService {
         // Create order items
         List<OrderItemModel> orderItems = cartItems.stream().map(ci -> {
             OrderItemModel oi = new OrderItemModel();
-            oi.setBookId(ci.getBook().getId());   // FIX: ensure bookId is set
+            oi.setBookId(ci.getBook().getId());   //ensure bookId is set
             oi.setBook(ci.getBook());             // keep book entity for JSON
             oi.setTitle(ci.getBook().getTitle());
             oi.setPrice(ci.getBook().getPrice());
@@ -80,20 +76,19 @@ public class CartService {
 
         order.setOrderItems(orderItems);
 
-        // Calculate total
-        double total = orderItems.stream()
-                .mapToDouble(i -> i.getPrice() * i.getQuantity())
-                .sum();
+        // calculate total
+        double total = 0;
+        for (OrderItemModel item : orderItems) total += item.getPrice() * item.getQuantity();
         order.setTotalAmount(total);
 
-        // Save order and clear cart
+
+        // save and delete cart
         orderRepo.save(order);
         cartRepo.deleteByUsername(username);
 
         return order;
     }
 
-    // =================== GET ORDER HISTORY ===================
     public List<OrderModel> getOrderHistory(String username) {
         return orderRepo.findByUsernameOrderByOrderDateDesc(username);
     }
