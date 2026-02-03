@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartCount();
 });
 
-// ====================== CART ======================
+
 function renderCart() {
     const cartList = document.getElementById("cartList");
     const cartTotal = document.getElementById("cartTotal");
@@ -44,7 +44,7 @@ function renderCart() {
             }
 
             if (cartTotal) {
-                // Backend can optionally send a cartTotal, else calculate here
+                // send a cartTotal or calculate here
                 const total = cartItems.reduce((sum, item) => sum + (item.book?.price || 0) * item.quantity, 0);
                 cartTotal.textContent = total.toFixed(2);
             }
@@ -52,7 +52,7 @@ function renderCart() {
         .catch(console.error);
 }
 
-// ====================== CHECKOUT ======================
+// checkout
 const checkoutBtn = document.getElementById("checkoutBtn");
 if (checkoutBtn) {
     checkoutBtn.addEventListener("click", () => {
@@ -72,7 +72,7 @@ if (checkoutBtn) {
     });
 }
 
-// ====================== ORDER HISTORY ======================
+//order history
 function renderOrders() {
     const orderList = document.getElementById("orderList");
     if (!orderList) return;
@@ -108,7 +108,7 @@ function renderOrders() {
         .catch(console.error);
 }
 
-// ====================== CART COUNT ======================
+//cart count
 function updateCartCount() {
     const cartCountEl = document.getElementById("cartCount");
     if (!cartCountEl) return;
@@ -122,7 +122,7 @@ function updateCartCount() {
         .catch(console.error);
 }
 
-// ====================== ADD TO CART BUTTONS ======================
+// button for add to cart
 document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         const bookId = btn.dataset.id;

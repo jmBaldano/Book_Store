@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 
+/**
+ * The type Book controller.
+ */
 @Controller
 @RequiredArgsConstructor
 public class BookController {
@@ -20,6 +23,14 @@ public class BookController {
     private final CategoryRepository categoryRepo;
 
 
+    /**
+     * List books string.
+     *
+     * @param categoryId the category id
+     * @param q          the q
+     * @param model      the model
+     * @return the string
+     */
     @GetMapping("/books")
     public String listBooks(@RequestParam(required = false) Integer categoryId, @RequestParam(required = false) String q, Model model) {
 
@@ -34,6 +45,14 @@ public class BookController {
 
         return "books";
     }
+
+    /**
+     * Book details string.
+     *
+     * @param id    the id
+     * @param model the model
+     * @return the string
+     */
     @GetMapping("/books/details")
     public String bookDetails(@RequestParam Long id, Model model) {
         BookModel book = bookService.getBookById(id);

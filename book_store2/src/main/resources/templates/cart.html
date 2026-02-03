@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-
+        /* Reset */
         * {
             margin: 0;
             padding: 0;
@@ -27,15 +27,14 @@
             font-size: 32px;
         }
 
-
         .cart-container {
             max-width: 900px;
             margin: auto;
             background: #fff;
             padding: 30px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 8px;
         }
-
 
         #cartList {
             list-style: none;
@@ -49,8 +48,30 @@
             padding: 15px 0;
             border-bottom: 1px solid #eee;
             font-size: 16px;
+            gap: 10px;
         }
 
+        #cartList li span.item-title {
+            flex: 1;
+        }
+
+        /* Remove Button */
+        .remove-btn {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #333;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background-color: #333;
+            color: #fff;
+            border-color: #333;
+        }
 
         .cart-total {
             display: flex;
@@ -61,26 +82,23 @@
             font-weight: bold;
         }
 
-
         .cart-actions {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             margin-top: 30px;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        button {
+        #checkoutBtn {
             padding: 14px 20px;
             border: none;
             cursor: pointer;
             font-size: 16px;
-            flex: 1;
-        }
-
-        #checkoutBtn {
             background: #333;
             color: #fff;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
 
         #checkoutBtn:hover {
@@ -105,14 +123,13 @@
             text-decoration: underline;
         }
 
-
         .empty-cart {
             text-align: center;
             color: #777;
             padding: 40px 0;
         }
 
-
+        /* Responsive */
         @media (max-width: 600px) {
             #cartList li {
                 flex-direction: column;
@@ -122,6 +139,11 @@
 
             .cart-actions {
                 flex-direction: column;
+                width: 100%;
+            }
+
+            #checkoutBtn {
+                width: 100%;
             }
         }
     </style>

@@ -13,10 +13,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+/**
+ * The type Security config.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * User details service user details service.
+     *
+     * @param repo the repo
+     * @return the user details service
+     */
     @Bean
     public UserDetailsService userDetailsService(UserRepository repo) {
         return username -> repo.findByUsername(username)
@@ -27,13 +36,27 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    // expose AuthenticationManager for programmatic authentication in controller
+    /**
+     * Authentication manager authentication manager.
+     *
+     * @param config the config
+     * @return the authentication manager
+     * @throws Exception the exception
+     */
+// expose AuthenticationManager for programmatic authentication in controller
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // SecurityFilterChain: permit /auth/** (login/register endpoints) and static assets,
+    /**
+     * Security filter chain security filter chain.
+     *
+     * @param http the http
+     * @return the security filter chain
+     * @throws Exception the exception
+     */
+// SecurityFilterChain: permit /auth/** (login/register endpoints) and static assets,
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

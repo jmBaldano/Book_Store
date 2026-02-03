@@ -6,16 +6,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
+    //these handles the http request for the cart and order history feature
+
     @GetMapping("/cart")
     public String cartPage() {
-        return "cart"; // Spring resolves this to cart.html in templates
+        return "cart";
     }
 
     @GetMapping("/orders")
     public String ordersPage() {
-        return "orders"; // if you want /orders page
+        return "orders";
     }
-
 
 
     @GetMapping("/profile")

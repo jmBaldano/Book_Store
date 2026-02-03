@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * The type Cart service.
+ */
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -19,10 +22,22 @@ public class CartService {
     private final BookRepository bookRepo;
     private final OrderRepository orderRepo;
 
+    /**
+     * Gets cart.
+     *
+     * @param username the username
+     * @return the cart
+     */
     public List<CartItemModel> getCart(String username) {
         return cartRepo.findByUsername(username);
     }
 
+    /**
+     * Add to cart.
+     *
+     * @param username the username
+     * @param bookId   the book id
+     */
     @Transactional
     public void addToCart(String username, Long bookId) {
         CartItemModel item = cartRepo
@@ -40,6 +55,12 @@ public class CartService {
         cartRepo.save(item);
     }
 
+    /**
+     * Remove from cart.
+     *
+     * @param username   the username
+     * @param cartItemId the cart item id
+     */
     @Transactional
     public void removeFromCart(String username, Long cartItemId) {
         CartItemModel item = cartRepo.findById(cartItemId)
@@ -52,6 +73,12 @@ public class CartService {
         cartRepo.delete(item);
     }
 
+    /**
+     * Checkout order model.
+     *
+     * @param username the username
+     * @return the order model
+     */
     @Transactional
     public OrderModel checkout(String username) {
 
@@ -89,6 +116,12 @@ public class CartService {
         return order;
     }
 
+    /**
+     * Gets order history.
+     *
+     * @param username the username
+     * @return the order history
+     */
     public List<OrderModel> getOrderHistory(String username) {
         return orderRepo.findByUsernameOrderByOrderDateDesc(username);
     }

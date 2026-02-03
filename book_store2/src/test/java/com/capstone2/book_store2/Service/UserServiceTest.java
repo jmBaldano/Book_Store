@@ -7,14 +7,19 @@ import org.mockito.Mockito;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The type User service test.
+ */
 class UserServiceTest {
     private UserService userService;
     private UserRepository userRepo;
     private PasswordEncoder  passwordEncoder;
     private AuthenticationManager authenticationManager;
 
+    /**
+     * Setup.
+     */
     @BeforeEach
     void setup(){
         userRepo = Mockito.mock(UserRepository.class);
@@ -24,6 +29,9 @@ class UserServiceTest {
         userService = new UserService(userRepo, passwordEncoder, authenticationManager );
     }
 
+    /**
+     * Register.
+     */
     @Test
     void register() {
         // Create a dummy user
@@ -48,10 +56,16 @@ class UserServiceTest {
     }
 
 
+    /**
+     * Login.
+     */
     @Test
     void login() {
     }
 
+    /**
+     * Find by username.
+     */
     @Test
     void findByUsername() {
     }

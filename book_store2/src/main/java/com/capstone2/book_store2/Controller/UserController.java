@@ -18,7 +18,6 @@ public class UserController {
     private final UserService userService;
 
       //register endpoint
-
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserModel user) {
         try {
@@ -30,7 +29,7 @@ public class UserController {
     }
 
 
-    // Login endpoint
+    // login endpoint
 
     @PostMapping("/login")
     public ResponseEntity<String> login(
@@ -42,10 +41,10 @@ public class UserController {
             Authentication auth =
                     userService.login(user.getUsername(), user.getPassword());
 
-            // Store authentication in SecurityContext
+            // store authentication in SecurityContext
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            // Force session creation (JSESSIONID cookie)
+            //get the current session
             request.getSession(true);
 
             return ResponseEntity.ok("Login successful!");
@@ -54,7 +53,7 @@ public class UserController {
                     .body("Invalid username or password!");
         }
     }
-    // Profile details endpoint
+    // profile details endpoint
     @GetMapping("/me")
     public UserModel getCurrentUser(Authentication authentication) {
         // Return the current user's details (excluding password)

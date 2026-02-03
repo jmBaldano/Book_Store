@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * The type Book service.
+ */
 @Service
 @RequiredArgsConstructor
 public class BookService {
@@ -16,6 +19,13 @@ public class BookService {
     private final BookRepository bookRepo;
 
 
+    /**
+     * Gets books.
+     *
+     * @param categoryId the category id
+     * @param q          the q
+     * @return the books
+     */
     public List<BookModel> getBooks(Integer categoryId, String q) {
 
         boolean hasQuery = q != null && !q.isBlank();
@@ -43,6 +53,13 @@ public class BookService {
 
         return books;
     }
+
+    /**
+     * Gets book by id.
+     *
+     * @param id the id
+     * @return the book by id
+     */
     public BookModel getBookById(Long id) {
         return bookRepo.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
     }
