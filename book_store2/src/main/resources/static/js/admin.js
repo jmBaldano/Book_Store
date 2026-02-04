@@ -20,12 +20,13 @@ document.getElementById('bookForm').addEventListener('submit', async e => {
     e.preventDefault();
     const title = document.getElementById('title').value;
     const author = document.getElementById('author').value;
+    const description = document.getElementById('description').value;
     const category = document.getElementById('category').value;
     const price = parseFloat(document.getElementById('price').value);
     const res = await fetch(`${baseUrl}/books`, {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({title, author, category, price})
+        body: JSON.stringify({title, author, description, category, price})
     });
     const text = await res.text();
     document.getElementById('bookMessage').innerText = text;
