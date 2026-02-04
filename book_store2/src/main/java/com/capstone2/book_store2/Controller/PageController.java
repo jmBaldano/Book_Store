@@ -18,10 +18,14 @@ public class PageController {
         return "orders";
     }
 
-
     @GetMapping("/profile")
     public String profilePage() {
         return "profile";
+    }
+
+    @GetMapping("/admin.html")
+    public String adminPage() {
+        return "admin";
     }
 }
 

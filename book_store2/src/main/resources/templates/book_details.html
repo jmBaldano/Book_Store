@@ -67,10 +67,7 @@
     <div class="price">₱<span th:text="${#numbers.formatDecimal(book.price,1,'COMMA',2,'POINT')}"></span></div>
     <div class="desc" th:text="${book.description}"></div>
     <div class="category">Category: <span th:text="${book.category.name}"></span></div>
-    <button class="add-to-cart-btn"
-                th:attr="data-id=${book.id},
-                         data-title=${book.title},
-                         data-price=${book.price}">
+    <button class="add-to-cart-btn" th:attr="data-id=${book.id},data-title=${book.title},data-price=${book.price}">
             Add to Cart
         </button>
     <a href="/books" class="back-link">⬅ Back to Store</a>

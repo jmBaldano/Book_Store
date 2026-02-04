@@ -4,6 +4,7 @@ import com.capstone2.book_store2.Model.BookModel;
 import com.capstone2.book_store2.Repository.CategoryRepository;
 import com.capstone2.book_store2.Service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,6 @@ public class BookController {
 
     private final BookService bookService;
     private final CategoryRepository categoryRepo;
-
-
     /**
      * List books string.
      *
@@ -32,10 +31,14 @@ public class BookController {
      * @return the string
      */
     @GetMapping("/books")
-    public String listBooks(@RequestParam(required = false) Integer categoryId, @RequestParam(required = false) String q, Model model) {
+    public String listBooks(@RequestParam(required = false) Integer categoryId,
+                            @RequestParam(required = false) String q,
+                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "8") int size,
+                            Model model) {
 
         //ask service for books
-        List<BookModel> books = bookService.getBooks(categoryId, q);
+        Page<BookModel> books = bookService.getBooks(categoryId, q, page, size);
 
         //attributes for Thymeleaf
         model.addAttribute("books", books);

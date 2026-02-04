@@ -18,4 +18,8 @@ public class CategoryModel {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    public CategoryModel(String name) {
+        this.name = name;
+    }
 }

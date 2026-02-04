@@ -39,12 +39,12 @@ public class UserService {
 
     public Authentication login(String username, String password) {
 
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(username, password);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 
         // will throw AuthenticationException if invalid
         return authenticationManager.authenticate(token);
     }
+    // checks if the username is in database
     public UserModel findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
     }

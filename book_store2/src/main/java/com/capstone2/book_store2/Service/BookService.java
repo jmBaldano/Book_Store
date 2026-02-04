@@ -3,10 +3,12 @@ package com.capstone2.book_store2.Service;
 import com.capstone2.book_store2.Model.BookModel;
 import com.capstone2.book_store2.Repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -26,33 +28,27 @@ public class BookService {
      * @param q          the q
      * @return the books
      */
-    public List<BookModel> getBooks(Integer categoryId, String q) {
+    public Page<BookModel> getBooks(Integer categoryId, String q, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         boolean hasQuery = q != null && !q.isBlank();
         boolean hasCategory = categoryId != null;
-
-        List<BookModel> books;
-
-        if (hasCategory) {
-            books = bookRepo.findByCategoryId(categoryId);
-
-            //
-            if (hasQuery) {
-                String lower = q.toLowerCase();
-                books = books.stream().filter(b -> b.getTitle() != null && b.getTitle().toLowerCase().contains(lower)).collect(Collectors.toList());
-
-            }
-
-        } else if (hasQuery) {
-            books = bookRepo
-                    .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(q, q); // a jpa repo method
-
-        } else {
-            books = bookRepo.findAll();
+        if (hasCategory && hasQuery) {
+            return bookRepo.findByCategoryIdAndTitleContainingIgnoreCase(categoryId, q, pageable);
         }
-
-        return books;
+        else if (hasCategory) {
+            return bookRepo.findByCategoryId(categoryId, pageable);
+        }
+        else if (hasQuery) {
+            return bookRepo.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(q, q, pageable);
+        }
+        else {
+            return bookRepo.findAll(pageable);
+        }
     }
+
+
 
     /**
      * Gets book by id.

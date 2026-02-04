@@ -1,5 +1,8 @@
 package com.capstone2.book_store2.Model;
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,4 +23,8 @@ public class UserModel {
 
     @Column(nullable = false)
     private String password;
+
+    private String role;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

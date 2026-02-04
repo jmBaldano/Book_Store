@@ -38,19 +38,18 @@ public class UserController {
     ) {
         try {
             // userService authenticare
-            Authentication auth =
-                    userService.login(user.getUsername(), user.getPassword());
+            Authentication auth = userService.login(user.getUsername(), user.getPassword());
 
             // store authentication in SecurityContext
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            //get the current session
+            //get the  current session
             request.getSession(true);
 
             return ResponseEntity.ok("Login successful!");
-        } catch (Exception ex) {
-            return ResponseEntity.status(401)
-                    .body("Invalid username or password!");
+        }
+        catch (Exception ex) {
+            return ResponseEntity.status(401).body("Invalid username or password!");
         }
     }
     // profile details endpoint

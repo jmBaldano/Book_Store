@@ -37,7 +37,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Authentication manager authentication manager.
+     * Authentication manager.
      *
      * @param config the config
      * @return the authentication manager
@@ -60,7 +60,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // disable CSRF
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -75,9 +74,12 @@ public class SecurityConfig {
                                 "/books",
                                 "/Book_details",
                                 "/books/details",
+                                "/admin.html",
+                                "/admin",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
+                        .requestMatchers("/admin/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // programmatic authentication in controller, so disable default form login
