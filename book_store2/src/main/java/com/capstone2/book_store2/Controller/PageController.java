@@ -27,5 +27,11 @@ public class PageController {
     public String adminPage() {
         return "admin";
     }
+
+    @GetMapping("/adminLogin")
+    public String adminLogin(){
+        return "adminLogin";
+
+    }
 }
 

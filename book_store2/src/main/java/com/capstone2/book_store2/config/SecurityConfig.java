@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -27,13 +28,22 @@ public class SecurityConfig {
      * @return the user details service
      */
     @Bean
-    public UserDetailsService userDetailsService(UserRepository repo) {
-        return username -> repo.findByUsername(username)
-                .map(u -> User.withUsername(u.getUsername())
-                        .password(u.getPassword())
-                        .roles("USER")
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetailsService userDetailsService(UserRepository repo, PasswordEncoder encoder) {
+        return username -> {
+            if ("admin".equals(username)) {
+                return User.withUsername("admin")
+                        .password(encoder.encode("admin123")) // hardcoded password
+                        .roles("ADMIN")
+                        .build();
+            }
+
+            return repo.findByUsername(username)
+                    .map(u -> User.withUsername(u.getUsername())
+                            .password(u.getPassword())
+                            .roles("USER")
+                            .build())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        };
     }
 
     /**
@@ -74,8 +84,6 @@ public class SecurityConfig {
                                 "/books",
                                 "/Book_details",
                                 "/books/details",
-                                "/admin.html",
-                                "/admin",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
@@ -83,9 +91,15 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 // programmatic authentication in controller, so disable default form login
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+//                .formLogin(AbstractHttpConfigurer::disable)
+//                .httpBasic(AbstractHttpConfigurer::disable)
                 // Enable logout endpoint
+                .formLogin(form -> form
+                        .loginPage("/adminLogin")          // your login page
+                        .loginProcessingUrl("/adminLogin") // form POST URL
+                        .defaultSuccessUrl("/admin.html", true)
+                        .permitAll()
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/auth/login?logout")

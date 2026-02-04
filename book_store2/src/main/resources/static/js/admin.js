@@ -12,7 +12,7 @@ document.getElementById('userForm').addEventListener('submit', async e => {
     });
     const text = await res.text();
     document.getElementById('userMessage').innerText = text;
-    loadUsers();
+    // loadUsers();
 });
 
 // Add book
@@ -29,36 +29,36 @@ document.getElementById('bookForm').addEventListener('submit', async e => {
     });
     const text = await res.text();
     document.getElementById('bookMessage').innerText = text;
-    loadBooks();
+    // loadBooks();
 });
 
 // Load users
-async function loadUsers() {
-    const res = await fetch(`${baseUrl}/users`);
-    const users = await res.json();
-    const ul = document.getElementById('userList');
-    ul.innerHTML = '';
-    users.forEach(u => {
-        const li = document.createElement('li');
-        li.textContent = `${u.id} - ${u.username} (${u.role})`;
-        ul.appendChild(li);
-    });
-}
+// async function loadUsers() {
+//     const res = await fetch(`${baseUrl}/users`);
+//     const users = await res.json();
+//     const ul = document.getElementById('userList');
+//     ul.innerHTML = '';
+//     users.forEach(u => {
+//         const li = document.createElement('li');
+//         li.textContent = `${u.id} - ${u.username} (${u.role})`;
+//         ul.appendChild(li);
+//     });
+// }
 
 // Load books
-async function loadBooks() {
-    const res = await fetch(`${baseUrl}/books`);
-    const books = await res.json();
-    const ul = document.getElementById('bookList');
-    ul.innerHTML = '';
-    books.forEach(b => {
-        const li = document.createElement('li');
-        li.textContent = `${b.id} - ${b.title} by ${b.author} [${b.category.name}] $${b.price}`;
-        ul.appendChild(li);
-    });
-
-}
+// async function loadBooks() {
+//     const res = await fetch(`${baseUrl}/books`);
+//     const books = await res.json();
+//     const ul = document.getElementById('bookList');
+//     ul.innerHTML = '';
+//     books.forEach(b => {
+//         const li = document.createElement('li');
+//         li.textContent = `${b.id} - ${b.title} by ${b.author} [${b.category.name}] $${b.price}`;
+//         ul.appendChild(li);
+//     });
+//
+// }
 
 // Initial load
-loadUsers();
-loadBooks();
+// loadUsers();
+// loadBooks();

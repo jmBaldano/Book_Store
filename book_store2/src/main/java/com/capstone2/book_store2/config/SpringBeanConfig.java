@@ -4,9 +4,13 @@ import com.capstone2.book_store2.Model.BookModel;
 import com.capstone2.book_store2.Model.CategoryModel;
 import com.capstone2.book_store2.Repository.BookRepository;
 import com.capstone2.book_store2.Repository.CategoryRepository;
+import com.capstone2.book_store2.Repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

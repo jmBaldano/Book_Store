@@ -35,6 +35,7 @@ public class AdminController {
         return adminService.getAllUsers();
     }
 
+
     // List all books
     @GetMapping("/books")
     public List<BookModel> getBooks() {
